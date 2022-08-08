@@ -2,6 +2,26 @@ import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Load, Filter } from './Redux/Actions';
+import React from 'react';
+
+function Search(){
+  const dispatch = useDispatch();
+
+  let input= React.useRef();
+
+  const handleSubmit = (e) =>{
+    e.preventDefault(e.target.value);
+    dispatch(Filter(input.current.value.split(/\s*,\s*/)))
+  }
+  return (
+        <form onSubmit={handleSubmit}>
+          <input type="text" placeholder="Enter id" ref={input}></input>
+          <input type='submit' hidden/>
+          <button type='submit'>Filter</button>
+        </form>
+  )
+  
+}
 
 function App() {
   const dispatch = useDispatch();
@@ -16,51 +36,25 @@ function App() {
 
   const condition = useSelector(state => state.filter)
 
-  const filter = (data) => {
-    if (condition.length === 0 || condition == ''){
-      return data;
+  let filter;
+  if (condition.length === 0 || condition[0] == ''){
+      filter = data;
     }
     else {
-      return data.filter(item => condition[0]?.includes(item.id));
+      filter = data.filter(item => condition?.includes(String(item.id)));
     }
 
-  }
-  console.log(condition)
-
-  const [input, setInput] = useState()
-
-  const handleChange = (e) => {
-    setInput(e.target.value)
-  }
-
-  const handleSubmit = (e) =>{
-    e.preventDefault();
-    dispatch(Filter(input))
-  }
-
   const error = useSelector(state => state.error)
-
-  const showError = () => {
-    return(
-      <div className = 'error'>
-        <p>Connection error</p>
-      </div>
-
-    )
-  }
 
   return (
     <div className ='container'>
       <div className ='header'>
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Enter id" onChange={handleChange}></input>
-          <input type='submit' hidden/>
-          <button type='submit'>Filter</button>
-        </form>
+      <Search />
       </div>
-      {error && showError()}
+      {error && <div className = 'error'><p>Connection error</p></div>}
+      {filter.length === 0 && <div>Nothing found</div>}
       <ol>
-        {filter(data).map(res =>{
+        {filter.map(res =>{
           return(
             <li key={res.id}>{res.title}<small>id: {res.id}</small></li>
           )

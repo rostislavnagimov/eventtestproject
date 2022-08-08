@@ -22,7 +22,7 @@ export const Reducer = (state = initialState, action) => {
     case FILTER:
         return{
             ...state,
-            filter: [action.data]
+            filter: action.data
         }
 
     case ERROR:

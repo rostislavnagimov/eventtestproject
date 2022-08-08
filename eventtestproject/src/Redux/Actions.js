@@ -18,26 +18,9 @@ export function Load(request){
         
     }}
 
-export function Filter(condition){
-    let arr;
-    if (condition.includes(',')){
-        arr = JSON.parse("[" + condition + "]");
+export function Filter(input){
         return{
             type: FILTER,
-            data: arr
+            data: input
         }
-    } 
-    else if(typeof condition[0] == 'string'){
-        arr = JSON.parse("[" + condition + "]");
-        return{
-            type: FILTER,
-            data: arr
-        }
-    } else {
-        return{
-            type: FILTER,
-            data: condition
-        }
-    }
-    
 }
